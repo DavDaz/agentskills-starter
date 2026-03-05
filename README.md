@@ -9,33 +9,29 @@ Generá un `AGENTS.md` de calidad profesional en minutos, con skills, auto-invok
 
 ```mermaid
 flowchart TD
-    A([🆕 Proyecto nuevo]) --> B[/init\nOpenCode o Claude Code]
-    B --> C[AGENTS.md base\ngenerado automáticamente]
-    C --> D[/init-agents\nskill de este repo]
-    D --> E{¿Hay skills en\nskills/ del proyecto?}
+    A[agent-blueprint] -->|cp -r skills/| B[Tu proyecto]
 
-    E -- Sí --> F[Detecta stack\ny skills disponibles]
-    E -- No --> G[Genera estructura base\ncon TODOs explícitos]
+    B --> C[setup.sh --all]
+    C --> D[Symlinks y config creados]
 
-    F --> H[Enriquece AGENTS.md\ncon Skills Reference\ny Auto-invoke table]
-    G --> H
+    D --> E["slash-init en tu editor de IA"]
+    E --> F[AGENTS.md base generado]
 
-    H --> I[skill-sync\nsincroniza Auto-invoke\ndesde metadata de skills]
-    I --> J[setup.sh\ndistribuye a herramientas]
+    F --> G["slash-init-agents en tu editor de IA"]
+    G --> H[AGENTS.md enriquecido con skills y auto-invoke]
 
-    J --> K[Claude Code\n.claude/skills/\nCLAUDE.md]
-    J --> L[OpenCode\n.opencode/\nAGENTS.md]
-    J --> M[Gemini CLI\n.gemini/skills/\nGEMINI.md]
-    J --> N[GitHub Copilot\n.github/\ncopilot-instructions.md]
+    H --> I{Nueva skill necesaria}
+    I -- Si --> J[skill-creator guia la creacion]
+    J --> K[skill-sync sincroniza las tablas]
+    K --> I
+    I -- No --> L[Proyecto listo]
 
     style A fill:#1e3a5f,color:#fff
-    style D fill:#2d5a27,color:#fff
-    style I fill:#2d5a27,color:#fff
-    style J fill:#2d5a27,color:#fff
-    style K fill:#4a4a4a,color:#fff
-    style L fill:#4a4a4a,color:#fff
-    style M fill:#4a4a4a,color:#fff
-    style N fill:#4a4a4a,color:#fff
+    style B fill:#2d5a27,color:#fff
+    style C fill:#2d5a27,color:#fff
+    style J fill:#5b4ea8,color:#fff
+    style K fill:#7a3b00,color:#fff
+    style L fill:#1e3a5f,color:#fff
 ```
 
 ---
@@ -44,64 +40,85 @@ flowchart TD
 
 ```mermaid
 flowchart LR
-    subgraph INICIO["🚀 Al arrancar un proyecto"]
-        A[/init] --> B[/init-agents]
+    subgraph BOOTSTRAP[Una sola vez por proyecto]
+        A["cp -r skills/"] --> B["setup.sh --all"]
+        B --> C["slash-init"]
+        C --> D["slash-init-agents"]
     end
 
-    subgraph SKILLS["🔧 Al crear una nueva skill"]
-        C[skill-creator\nvalida estructura y formato]
-        C --> D[skill-sync\nactualiza Auto-invoke]
+    subgraph SKILLS[Cuando creas una skill nueva]
+        E[skill-creator] --> F[skill-sync]
     end
 
-    subgraph DISTRIBUCION["📦 Al compartir con el equipo"]
-        E[setup.sh --all\ndistribuye a todas las herramientas]
-    end
-
-    subgraph MANTENIMIENTO["🔄 Al modificar una skill existente"]
-        F[skill-sync\nresincroniza las tablas]
+    subgraph MANTENIMIENTO[Cuando modificas una skill]
+        G[skill-sync]
     end
 ```
 
 | Momento | Acción | Herramienta |
 |---------|--------|-------------|
-| Proyecto nuevo | Generá el AGENTS.md base | `/init` (nativo del editor) |
+| Arrancando un proyecto nuevo | Copiá las skills base | `cp -r skills/` |
+| Después de copiar | Creá los symlinks para tu editor de IA | `setup.sh --all` |
+| Una vez configurado el editor | Generá el AGENTS.md base | `/init` |
 | Inmediatamente después | Enriquecé con skills y auto-invoke | `/init-agents` |
 | Cuando creás una skill nueva | Seguí el protocolo correcto | `skill-creator` |
 | Después de crear/modificar una skill | Actualizá la tabla Auto-invoke | `skill-sync` |
-| Cuando onboarding al equipo | Distribuí a todas las herramientas | `setup.sh --all` |
 
 ---
 
 ## Quickstart
 
-### 1. Clonar e instalar en un proyecto
+### Paso 1 — Copiar las skills a tu proyecto
+
+Descargá este repo y copiá la carpeta `skills/` a la raíz de tu proyecto:
 
 ```bash
-# Clonar este repo en cualquier lugar de tu máquina
+# Clonar agent-blueprint (una sola vez, donde quieras)
 git clone https://github.com/tu-usuario/agent-blueprint.git
 
-# Ir al proyecto que querés configurar
+# Copiar las skills a tu proyecto
+cp -r agent-blueprint/skills/ /ruta/a/tu-proyecto/skills/
+```
+
+Eso es todo lo que necesitás de este repo. A partir de acá todo pasa dentro de **tu proyecto**.
+
+---
+
+### Paso 2 — Configurar las herramientas de IA
+
+Desde la raíz de **tu proyecto**, corré el script de setup para que tu herramienta de IA encuentre las skills:
+
+```bash
 cd /ruta/a/tu-proyecto
 
-# Distribuir las skills a tu herramienta de IA preferida
-/ruta/a/agent-blueprint/skills/setup.sh --claude    # Solo Claude Code
-/ruta/a/agent-blueprint/skills/setup.sh --all       # Todas las herramientas
+./skills/setup.sh --all       # Todas las herramientas (Claude, Gemini, Codex, Copilot)
+./skills/setup.sh --claude    # Solo Claude Code
 ```
 
-### 2. Inicializar el proyecto
+Esto crea los symlinks y archivos de configuración necesarios (`.claude/skills/`, `CLAUDE.md`, etc.).
+
+---
+
+### Paso 3 — Inicializar el AGENTS.md
+
+Dentro de tu editor de IA, ejecutá estos comandos en orden:
 
 ```bash
-# Dentro de tu editor de IA (Claude Code, OpenCode, etc.)
-/init           # Genera AGENTS.md base con estructura del repo
-/init-agents    # Enriquece con skills, auto-invoke y buenas prácticas
+/init           # Genera el AGENTS.md base analizando tu proyecto
+/init-agents    # Enriquece el AGENTS.md con skills, auto-invoke y buenas prácticas
 ```
 
-### 3. Agregar una skill nueva al proyecto
+---
+
+### Paso 4 — Crear skills para tu proyecto
+
+Cuando necesites documentar un patrón o flujo específico de tu proyecto, usá `skill-creator` para guiarte:
 
 ```bash
-mkdir -p skills/mi-skill
-# Crear skills/mi-skill/SKILL.md siguiendo el protocolo de skill-creator
-# Luego sincronizar:
+# Dentro de tu editor de IA
+# Pedile al agente que cree una skill nueva — él carga skill-creator automáticamente
+
+# Después de crear o modificar cualquier skill, sincronizá las tablas:
 ./skills/skill-sync/assets/sync.sh
 ```
 
@@ -140,15 +157,15 @@ agent-blueprint/
 
 ```mermaid
 flowchart TD
-    SC[skill-creator\n📋 Protocolo de creación]
-    IA[init-agents\n🏗️ Genera AGENTS.md]
-    SS[skill-sync\n🔄 Sincroniza tablas]
-    SH[setup.sh\n📦 Distribuye herramientas]
+    SC[skill-creator - Protocolo de creacion]
+    IA[init-agents - Genera AGENTS.md]
+    SS[skill-sync - Sincroniza tablas]
+    SH[setup.sh - Distribuye herramientas]
 
-    SC -->|"SKILL.md bien formado\ncon metadata correcta"| SS
-    IA -->|"AGENTS.md generado\ncon secciones base"| SS
-    SS -->|"Auto-invoke actualizado\nen AGENTS.md"| SH
-    SH -->|"Skills disponibles\nen cada herramienta"| IA
+    SC -->|SKILL.md bien formado con metadata| SS
+    IA -->|AGENTS.md generado con secciones base| SS
+    SS -->|Auto-invoke actualizado en AGENTS.md| SH
+    SH -->|Skills disponibles en cada herramienta| IA
 
     style SC fill:#5b4ea8,color:#fff
     style IA fill:#2d5a27,color:#fff
@@ -160,7 +177,7 @@ Cada skill sabe cuándo invocar a las otras:
 - **`init-agents`** llama a `skill-sync` después de generar el AGENTS.md
 - **`skill-creator`** indica que hay que correr `skill-sync` al terminar
 - **`skill-sync`** lee los metadatos (`scope`, `auto_invoke`) de cada SKILL.md
-- **`setup.sh`** es el paso final que lleva todo al proyecto destino
+- **`setup.sh`** crea los symlinks para que tu editor de IA encuentre las skills
 
 ---
 
