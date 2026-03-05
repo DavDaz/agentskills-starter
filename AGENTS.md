@@ -1,4 +1,4 @@
-# agent-blueprint — AI Agent Ruleset
+# agentskills-starter — AI Agent Ruleset
 
 <!--
   HOW THIS FILE WORKS
@@ -12,6 +12,7 @@
 ---
 
 > **Skills Reference** — load these on demand for detailed patterns:
+>
 > - [`init-agents`](skills/init-agents/SKILL.md) — Generates AGENTS.md / CLAUDE.md for any project. Trigger: initializing or creating AGENTS.md.
 > - [`skill-creator`](skills/skill-creator/SKILL.md) — Guide to create new skills correctly. Trigger: creating a new skill in this repository.
 > - [`skill-sync`](skills/skill-sync/SKILL.md) — Syncs Auto-invoke tables from skill metadata. Trigger: after creating or modifying a skill.
@@ -22,25 +23,27 @@
 
 When performing these actions, ALWAYS load the corresponding skill FIRST:
 
-| Action | Skill |
-|--------|-------|
-| After creating/modifying a skill | `skill-sync` |
-| Creating a new skill in this repository | `skill-creator` |
-| Initializing or creating AGENTS.md / CLAUDE.md for a project | `init-agents` |
-| Regenerate AGENTS.md Auto-invoke tables | `skill-sync` |
-| Troubleshoot why a skill is missing from Auto-invoke | `skill-sync` |
+| Action                                                       | Skill           |
+| ------------------------------------------------------------ | --------------- |
+| After creating/modifying a skill                             | `skill-sync`    |
+| Creating a new skill in this repository                      | `skill-creator` |
+| Initializing or creating AGENTS.md / CLAUDE.md for a project | `init-agents`   |
+| Regenerate AGENTS.md Auto-invoke tables                      | `skill-sync`    |
+| Troubleshoot why a skill is missing from Auto-invoke         | `skill-sync`    |
 
 ---
 
 ## CRITICAL RULES — NON-NEGOTIABLE
 
 ### AGENTS.md Structure
+
 - ALWAYS: Keep Skills Reference + Auto-invoke + Critical Rules within the first 200 lines
 - ALWAYS: Run `skill-sync` after adding or modifying skills — never edit Auto-invoke manually
 - NEVER: Put Commands or Project Structure before line 200 — they load on demand
 - NEVER: Omit a section — use `TODO:` placeholders if content is not yet defined
 
 ### Skills Authoring
+
 - ALWAYS: Add `name` and `description` frontmatter to every SKILL.md
 - ALWAYS: Add `metadata.scope` and `metadata.auto_invoke` so skill-sync works correctly
 - ALWAYS: Keep skill name matching its directory name exactly
@@ -48,6 +51,7 @@ When performing these actions, ALWAYS load the corresponding skill FIRST:
 - NEVER: Use consecutive hyphens or start/end with `-` in skill names
 
 ### Skills Discovery
+
 - ALWAYS: Scan `skills/*/SKILL.md` to auto-discover — never hardcode skill names
 - NEVER: Invent content not present in the original repo — use `TODO:` for missing sections
 
@@ -72,7 +76,7 @@ Documentation-only repository — no application stack.
 ## Project Structure
 
 ```
-agent-blueprint/
+agentskills-starter/
 ├── AGENTS.md                              # Universal AI agent ruleset (this file)
 ├── README.md                              # Quickstart, diagrams, install instructions
 │

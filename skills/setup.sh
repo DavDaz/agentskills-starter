@@ -1,5 +1,5 @@
 #!/bin/bash
-# Setup AI Skills — agent-blueprint
+# Setup AI Skills — agentskills-starter
 # Configures AI coding assistants that follow agentskills.io standard:
 #   - Claude Code: .claude/skills/ symlink + CLAUDE.md copies
 #   - Gemini CLI: .gemini/skills/ symlink + GEMINI.md copies
@@ -38,152 +38,152 @@ SETUP_COPILOT=false
 # =============================================================================
 
 show_help() {
-    echo "Usage: $0 [OPTIONS]"
-    echo ""
-    echo "Configure AI coding assistants using agent-blueprint skills."
-    echo ""
-    echo "Options:"
-    echo "  --all       Configure all AI assistants"
-    echo "  --claude    Configure Claude Code"
-    echo "  --gemini    Configure Gemini CLI"
-    echo "  --codex     Configure Codex (OpenAI)"
-    echo "  --copilot   Configure GitHub Copilot"
-    echo "  --help      Show this help message"
-    echo ""
-    echo "If no options provided, runs in interactive mode."
-    echo ""
-    echo "Examples:"
-    echo "  $0                      # Interactive selection"
-    echo "  $0 --all                # All AI assistants"
-    echo "  $0 --claude --codex     # Only Claude and Codex"
+  echo "Usage: $0 [OPTIONS]"
+  echo ""
+  echo "Configure AI coding assistants using agentskills-starter skills."
+  echo ""
+  echo "Options:"
+  echo "  --all       Configure all AI assistants"
+  echo "  --claude    Configure Claude Code"
+  echo "  --gemini    Configure Gemini CLI"
+  echo "  --codex     Configure Codex (OpenAI)"
+  echo "  --copilot   Configure GitHub Copilot"
+  echo "  --help      Show this help message"
+  echo ""
+  echo "If no options provided, runs in interactive mode."
+  echo ""
+  echo "Examples:"
+  echo "  $0                      # Interactive selection"
+  echo "  $0 --all                # All AI assistants"
+  echo "  $0 --claude --codex     # Only Claude and Codex"
 }
 
 show_menu() {
-    echo -e "${BOLD}Which AI assistants do you use?${NC}"
-    echo -e "${CYAN}(Use numbers to toggle, Enter to confirm)${NC}"
-    echo ""
+  echo -e "${BOLD}Which AI assistants do you use?${NC}"
+  echo -e "${CYAN}(Use numbers to toggle, Enter to confirm)${NC}"
+  echo ""
 
-    local options=("Claude Code" "Gemini CLI" "Codex (OpenAI)" "GitHub Copilot")
-    local selected=(true false false false)  # Claude selected by default
+  local options=("Claude Code" "Gemini CLI" "Codex (OpenAI)" "GitHub Copilot")
+  local selected=(true false false false) # Claude selected by default
 
-    while true; do
-        for i in "${!options[@]}"; do
-            if [ "${selected[$i]}" = true ]; then
-                echo -e "  ${GREEN}[x]${NC} $((i+1)). ${options[$i]}"
-            else
-                echo -e "  [ ] $((i+1)). ${options[$i]}"
-            fi
-        done
-        echo ""
-        echo -e "  ${YELLOW}a${NC}. Select all"
-        echo -e "  ${YELLOW}n${NC}. Select none"
-        echo ""
-        echo -n "Toggle (1-4, a, n) or Enter to confirm: "
-
-        read -r choice
-
-        case $choice in
-            1) selected[0]=$([ "${selected[0]}" = true ] && echo false || echo true) ;;
-            2) selected[1]=$([ "${selected[1]}" = true ] && echo false || echo true) ;;
-            3) selected[2]=$([ "${selected[2]}" = true ] && echo false || echo true) ;;
-            4) selected[3]=$([ "${selected[3]}" = true ] && echo false || echo true) ;;
-            a|A) selected=(true true true true) ;;
-            n|N) selected=(false false false false) ;;
-            "") break ;;
-            *) echo -e "${RED}Invalid option${NC}" ;;
-        esac
-
-        # Move cursor up to redraw menu
-        echo -en "\033[10A\033[J"
+  while true; do
+    for i in "${!options[@]}"; do
+      if [ "${selected[$i]}" = true ]; then
+        echo -e "  ${GREEN}[x]${NC} $((i + 1)). ${options[$i]}"
+      else
+        echo -e "  [ ] $((i + 1)). ${options[$i]}"
+      fi
     done
+    echo ""
+    echo -e "  ${YELLOW}a${NC}. Select all"
+    echo -e "  ${YELLOW}n${NC}. Select none"
+    echo ""
+    echo -n "Toggle (1-4, a, n) or Enter to confirm: "
 
-    SETUP_CLAUDE=${selected[0]}
-    SETUP_GEMINI=${selected[1]}
-    SETUP_CODEX=${selected[2]}
-    SETUP_COPILOT=${selected[3]}
+    read -r choice
+
+    case $choice in
+    1) selected[0]=$([ "${selected[0]}" = true ] && echo false || echo true) ;;
+    2) selected[1]=$([ "${selected[1]}" = true ] && echo false || echo true) ;;
+    3) selected[2]=$([ "${selected[2]}" = true ] && echo false || echo true) ;;
+    4) selected[3]=$([ "${selected[3]}" = true ] && echo false || echo true) ;;
+    a | A) selected=(true true true true) ;;
+    n | N) selected=(false false false false) ;;
+    "") break ;;
+    *) echo -e "${RED}Invalid option${NC}" ;;
+    esac
+
+    # Move cursor up to redraw menu
+    echo -en "\033[10A\033[J"
+  done
+
+  SETUP_CLAUDE=${selected[0]}
+  SETUP_GEMINI=${selected[1]}
+  SETUP_CODEX=${selected[2]}
+  SETUP_COPILOT=${selected[3]}
 }
 
 setup_claude() {
-    local target="$REPO_ROOT/.claude/skills"
+  local target="$REPO_ROOT/.claude/skills"
 
-    if [ ! -d "$REPO_ROOT/.claude" ]; then
-        mkdir -p "$REPO_ROOT/.claude"
-    fi
+  if [ ! -d "$REPO_ROOT/.claude" ]; then
+    mkdir -p "$REPO_ROOT/.claude"
+  fi
 
-    if [ -L "$target" ]; then
-        rm "$target"
-    elif [ -d "$target" ]; then
-        mv "$target" "$REPO_ROOT/.claude/skills.backup.$(date +%s)"
-    fi
+  if [ -L "$target" ]; then
+    rm "$target"
+  elif [ -d "$target" ]; then
+    mv "$target" "$REPO_ROOT/.claude/skills.backup.$(date +%s)"
+  fi
 
-    ln -s "$SKILLS_SOURCE" "$target"
-    echo -e "${GREEN}  ✓ .claude/skills -> skills/${NC}"
+  ln -s "$SKILLS_SOURCE" "$target"
+  echo -e "${GREEN}  ✓ .claude/skills -> skills/${NC}"
 
-    # Copy AGENTS.md to CLAUDE.md
-    copy_agents_md "CLAUDE.md"
+  # Copy AGENTS.md to CLAUDE.md
+  copy_agents_md "CLAUDE.md"
 }
 
 setup_gemini() {
-    local target="$REPO_ROOT/.gemini/skills"
+  local target="$REPO_ROOT/.gemini/skills"
 
-    if [ ! -d "$REPO_ROOT/.gemini" ]; then
-        mkdir -p "$REPO_ROOT/.gemini"
-    fi
+  if [ ! -d "$REPO_ROOT/.gemini" ]; then
+    mkdir -p "$REPO_ROOT/.gemini"
+  fi
 
-    if [ -L "$target" ]; then
-        rm "$target"
-    elif [ -d "$target" ]; then
-        mv "$target" "$REPO_ROOT/.gemini/skills.backup.$(date +%s)"
-    fi
+  if [ -L "$target" ]; then
+    rm "$target"
+  elif [ -d "$target" ]; then
+    mv "$target" "$REPO_ROOT/.gemini/skills.backup.$(date +%s)"
+  fi
 
-    ln -s "$SKILLS_SOURCE" "$target"
-    echo -e "${GREEN}  ✓ .gemini/skills -> skills/${NC}"
+  ln -s "$SKILLS_SOURCE" "$target"
+  echo -e "${GREEN}  ✓ .gemini/skills -> skills/${NC}"
 
-    # Copy AGENTS.md to GEMINI.md
-    copy_agents_md "GEMINI.md"
+  # Copy AGENTS.md to GEMINI.md
+  copy_agents_md "GEMINI.md"
 }
 
 setup_codex() {
-    local target="$REPO_ROOT/.codex/skills"
+  local target="$REPO_ROOT/.codex/skills"
 
-    if [ ! -d "$REPO_ROOT/.codex" ]; then
-        mkdir -p "$REPO_ROOT/.codex"
-    fi
+  if [ ! -d "$REPO_ROOT/.codex" ]; then
+    mkdir -p "$REPO_ROOT/.codex"
+  fi
 
-    if [ -L "$target" ]; then
-        rm "$target"
-    elif [ -d "$target" ]; then
-        mv "$target" "$REPO_ROOT/.codex/skills.backup.$(date +%s)"
-    fi
+  if [ -L "$target" ]; then
+    rm "$target"
+  elif [ -d "$target" ]; then
+    mv "$target" "$REPO_ROOT/.codex/skills.backup.$(date +%s)"
+  fi
 
-    ln -s "$SKILLS_SOURCE" "$target"
-    echo -e "${GREEN}  ✓ .codex/skills -> skills/${NC}"
-    echo -e "${GREEN}  ✓ Codex uses AGENTS.md natively${NC}"
+  ln -s "$SKILLS_SOURCE" "$target"
+  echo -e "${GREEN}  ✓ .codex/skills -> skills/${NC}"
+  echo -e "${GREEN}  ✓ Codex uses AGENTS.md natively${NC}"
 }
 
 setup_copilot() {
-    if [ -f "$REPO_ROOT/AGENTS.md" ]; then
-        mkdir -p "$REPO_ROOT/.github"
-        cp "$REPO_ROOT/AGENTS.md" "$REPO_ROOT/.github/copilot-instructions.md"
-        echo -e "${GREEN}  ✓ AGENTS.md -> .github/copilot-instructions.md${NC}"
-    fi
+  if [ -f "$REPO_ROOT/AGENTS.md" ]; then
+    mkdir -p "$REPO_ROOT/.github"
+    cp "$REPO_ROOT/AGENTS.md" "$REPO_ROOT/.github/copilot-instructions.md"
+    echo -e "${GREEN}  ✓ AGENTS.md -> .github/copilot-instructions.md${NC}"
+  fi
 }
 
 copy_agents_md() {
-    local target_name="$1"
-    local agents_files
-    local count=0
+  local target_name="$1"
+  local agents_files
+  local count=0
 
-    agents_files=$(find "$REPO_ROOT" -name "AGENTS.md" -not -path "*/node_modules/*" -not -path "*/.git/*" 2>/dev/null)
+  agents_files=$(find "$REPO_ROOT" -name "AGENTS.md" -not -path "*/node_modules/*" -not -path "*/.git/*" 2>/dev/null)
 
-    for agents_file in $agents_files; do
-        local agents_dir
-        agents_dir=$(dirname "$agents_file")
-        cp "$agents_file" "$agents_dir/$target_name"
-        count=$((count + 1))
-    done
+  for agents_file in $agents_files; do
+    local agents_dir
+    agents_dir=$(dirname "$agents_file")
+    cp "$agents_file" "$agents_dir/$target_name"
+    count=$((count + 1))
+  done
 
-    echo -e "${GREEN}  ✓ Copied $count AGENTS.md -> $target_name${NC}"
+  echo -e "${GREEN}  ✓ Copied $count AGENTS.md -> $target_name${NC}"
 }
 
 # =============================================================================
@@ -191,47 +191,47 @@ copy_agents_md() {
 # =============================================================================
 
 while [[ $# -gt 0 ]]; do
-    case $1 in
-        --all)
-            SETUP_CLAUDE=true
-            SETUP_GEMINI=true
-            SETUP_CODEX=true
-            SETUP_COPILOT=true
-            shift
-            ;;
-        --claude)
-            SETUP_CLAUDE=true
-            shift
-            ;;
-        --gemini)
-            SETUP_GEMINI=true
-            shift
-            ;;
-        --codex)
-            SETUP_CODEX=true
-            shift
-            ;;
-        --copilot)
-            SETUP_COPILOT=true
-            shift
-            ;;
-        --help|-h)
-            show_help
-            exit 0
-            ;;
-        *)
-            echo -e "${RED}Unknown option: $1${NC}"
-            show_help
-            exit 1
-            ;;
-    esac
+  case $1 in
+  --all)
+    SETUP_CLAUDE=true
+    SETUP_GEMINI=true
+    SETUP_CODEX=true
+    SETUP_COPILOT=true
+    shift
+    ;;
+  --claude)
+    SETUP_CLAUDE=true
+    shift
+    ;;
+  --gemini)
+    SETUP_GEMINI=true
+    shift
+    ;;
+  --codex)
+    SETUP_CODEX=true
+    shift
+    ;;
+  --copilot)
+    SETUP_COPILOT=true
+    shift
+    ;;
+  --help | -h)
+    show_help
+    exit 0
+    ;;
+  *)
+    echo -e "${RED}Unknown option: $1${NC}"
+    show_help
+    exit 1
+    ;;
+  esac
 done
 
 # =============================================================================
 # MAIN
 # =============================================================================
 
-echo "🤖 agent-blueprint — AI Skills Setup"
+echo "🤖 agentskills-starter — AI Skills Setup"
 echo "======================================"
 echo ""
 
@@ -239,8 +239,8 @@ echo ""
 SKILL_COUNT=$(find "$SKILLS_SOURCE" -maxdepth 2 -name "SKILL.md" | wc -l | tr -d ' ')
 
 if [ "$SKILL_COUNT" -eq 0 ]; then
-    echo -e "${RED}No skills found in $SKILLS_SOURCE${NC}"
-    exit 1
+  echo -e "${RED}No skills found in $SKILLS_SOURCE${NC}"
+  exit 1
 fi
 
 echo -e "${BLUE}Found $SKILL_COUNT skills to configure${NC}"
@@ -248,14 +248,14 @@ echo ""
 
 # Interactive mode if no flags provided
 if [ "$SETUP_CLAUDE" = false ] && [ "$SETUP_GEMINI" = false ] && [ "$SETUP_CODEX" = false ] && [ "$SETUP_COPILOT" = false ]; then
-    show_menu
-    echo ""
+  show_menu
+  echo ""
 fi
 
 # Check if at least one selected
 if [ "$SETUP_CLAUDE" = false ] && [ "$SETUP_GEMINI" = false ] && [ "$SETUP_CODEX" = false ] && [ "$SETUP_COPILOT" = false ]; then
-    echo -e "${YELLOW}No AI assistants selected. Nothing to do.${NC}"
-    exit 0
+  echo -e "${YELLOW}No AI assistants selected. Nothing to do.${NC}"
+  exit 0
 fi
 
 # Run selected setups
@@ -267,26 +267,26 @@ TOTAL=0
 [ "$SETUP_COPILOT" = true ] && TOTAL=$((TOTAL + 1))
 
 if [ "$SETUP_CLAUDE" = true ]; then
-    echo -e "${YELLOW}[$STEP/$TOTAL] Setting up Claude Code...${NC}"
-    setup_claude
-    STEP=$((STEP + 1))
+  echo -e "${YELLOW}[$STEP/$TOTAL] Setting up Claude Code...${NC}"
+  setup_claude
+  STEP=$((STEP + 1))
 fi
 
 if [ "$SETUP_GEMINI" = true ]; then
-    echo -e "${YELLOW}[$STEP/$TOTAL] Setting up Gemini CLI...${NC}"
-    setup_gemini
-    STEP=$((STEP + 1))
+  echo -e "${YELLOW}[$STEP/$TOTAL] Setting up Gemini CLI...${NC}"
+  setup_gemini
+  STEP=$((STEP + 1))
 fi
 
 if [ "$SETUP_CODEX" = true ]; then
-    echo -e "${YELLOW}[$STEP/$TOTAL] Setting up Codex (OpenAI)...${NC}"
-    setup_codex
-    STEP=$((STEP + 1))
+  echo -e "${YELLOW}[$STEP/$TOTAL] Setting up Codex (OpenAI)...${NC}"
+  setup_codex
+  STEP=$((STEP + 1))
 fi
 
 if [ "$SETUP_COPILOT" = true ]; then
-    echo -e "${YELLOW}[$STEP/$TOTAL] Setting up GitHub Copilot...${NC}"
-    setup_copilot
+  echo -e "${YELLOW}[$STEP/$TOTAL] Setting up GitHub Copilot...${NC}"
+  setup_copilot
 fi
 
 # =============================================================================

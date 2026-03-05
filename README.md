@@ -1,4 +1,4 @@
-# agent-blueprint
+# agentskills-starter
 
 Kit de arranque para configurar agentes de IA en cualquier proyecto.
 Generá un `AGENTS.md` de calidad profesional en minutos, con skills, auto-invoke y distribución multi-herramienta.
@@ -9,7 +9,7 @@ Generá un `AGENTS.md` de calidad profesional en minutos, con skills, auto-invok
 
 ```mermaid
 flowchart TD
-    A[agent-blueprint] -->|cp -r skills/| B[Tu proyecto]
+    A[agentskills-starter] -->|cp -r skills/| B[Tu proyecto]
 
     B --> C[setup.sh --all]
     C --> D[Symlinks y config creados]
@@ -55,14 +55,14 @@ flowchart LR
     end
 ```
 
-| Momento | Acción | Herramienta |
-|---------|--------|-------------|
-| Arrancando un proyecto nuevo | Copiá las skills base | `cp -r skills/` |
-| Después de copiar | Creá los symlinks para tu editor de IA | `setup.sh --all` |
-| Una vez configurado el editor | Generá el AGENTS.md base | `/init` |
-| Inmediatamente después | Enriquecé con skills y auto-invoke | `/init-agents` |
-| Cuando creás una skill nueva | Seguí el protocolo correcto | `skill-creator` |
-| Después de crear/modificar una skill | Actualizá la tabla Auto-invoke | `skill-sync` |
+| Momento                              | Acción                                 | Herramienta      |
+| ------------------------------------ | -------------------------------------- | ---------------- |
+| Arrancando un proyecto nuevo         | Copiá las skills base                  | `cp -r skills/`  |
+| Después de copiar                    | Creá los symlinks para tu editor de IA | `setup.sh --all` |
+| Una vez configurado el editor        | Generá el AGENTS.md base               | `/init`          |
+| Inmediatamente después               | Enriquecé con skills y auto-invoke     | `/init-agents`   |
+| Cuando creás una skill nueva         | Seguí el protocolo correcto            | `skill-creator`  |
+| Después de crear/modificar una skill | Actualizá la tabla Auto-invoke         | `skill-sync`     |
 
 ---
 
@@ -73,11 +73,11 @@ flowchart LR
 Descargá este repo y copiá la carpeta `skills/` a la raíz de tu proyecto:
 
 ```bash
-# Clonar agent-blueprint (una sola vez, donde quieras)
-git clone https://github.com/tu-usuario/agent-blueprint.git
+# Clonar agentskills-starter (una sola vez, donde quieras)
+git clone https://github.com/tu-usuario/agentskills-starter.git
 
 # Copiar las skills a tu proyecto
-cp -r agent-blueprint/skills/ /ruta/a/tu-proyecto/skills/
+cp -r agentskills-starter/skills/ /ruta/a/tu-proyecto/skills/
 ```
 
 Eso es todo lo que necesitás de este repo. A partir de acá todo pasa dentro de **tu proyecto**.
@@ -127,7 +127,7 @@ Cuando necesites documentar un patrón o flujo específico de tu proyecto, usá 
 ## Estructura del repo
 
 ```
-agent-blueprint/
+agentskills-starter/
 ├── README.md                              # Este archivo
 ├── AGENTS.md                              # Ruleset para agentes de IA
 │
@@ -174,6 +174,7 @@ flowchart TD
 ```
 
 Cada skill sabe cuándo invocar a las otras:
+
 - **`init-agents`** llama a `skill-sync` después de generar el AGENTS.md
 - **`skill-creator`** indica que hay que correr `skill-sync` al terminar
 - **`skill-sync`** lee los metadatos (`scope`, `auto_invoke`) de cada SKILL.md
@@ -183,13 +184,13 @@ Cada skill sabe cuándo invocar a las otras:
 
 ## Compatibilidad
 
-| Herramienta | Soporte | Mecanismo |
-|-------------|---------|-----------|
-| Claude Code | ✅ | `.claude/skills/` + `CLAUDE.md` |
-| OpenCode | ✅ | `.opencode/skills/` + `AGENTS.md` |
-| GitHub Copilot | ✅ | `.github/copilot-instructions.md` |
-| Gemini CLI | ✅ | `.gemini/skills/` + `GEMINI.md` |
-| Codex (OpenAI) | ✅ | `AGENTS.md` nativo |
+| Herramienta    | Soporte | Mecanismo                         |
+| -------------- | ------- | --------------------------------- |
+| Claude Code    | ✅      | `.claude/skills/` + `CLAUDE.md`   |
+| OpenCode       | ✅      | `.opencode/skills/` + `AGENTS.md` |
+| GitHub Copilot | ✅      | `.github/copilot-instructions.md` |
+| Gemini CLI     | ✅      | `.gemini/skills/` + `GEMINI.md`   |
+| Codex (OpenAI) | ✅      | `AGENTS.md` nativo                |
 
 Las skills siguen el estándar [agentskills.io](https://agentskills.io) — compatibles con múltiples herramientas sin modificaciones.
 
@@ -207,7 +208,7 @@ description: >
   Trigger: Cuándo invocarla.
 version: "1.0"
 metadata:
-  scope: [root]          # root | ui | api | sdk — qué AGENTS.md actualizar
+  scope: [root] # root | ui | api | sdk — qué AGENTS.md actualizar
   auto_invoke: "Acción que dispara el auto-invoke"
 ---
 ```
