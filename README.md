@@ -11,7 +11,7 @@ Generá un `AGENTS.md` de calidad profesional en minutos, con skills, auto-invok
 flowchart TD
     A[agentskills-starter] -->|cp -r skills/| B[Tu proyecto]
 
-    B --> C[setup.sh --all]
+    B --> C[.skills/setup.sh --all]
     C --> D[Symlinks y config creados]
 
     D --> E["slash-init en tu editor de IA"]
