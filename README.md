@@ -91,11 +91,17 @@ Desde la raíz de **tu proyecto**, corré el script de setup para que tu herrami
 ```bash
 cd /ruta/a/tu-proyecto
 
-./skills/setup.sh --all       # Todas las herramientas (Claude, Gemini, Codex, Copilot)
-./skills/setup.sh --claude    # Solo Claude Code
+./skills/setup.sh --all           # Todas las herramientas (Claude, Gemini, Codex, Copilot, OpenCode)
+./skills/setup.sh --claude        # Solo Claude Code
+./skills/setup.sh --opencode      # Solo OpenCode (instala skills y comandos globalmente)
+./skills/setup.sh --claude --opencode  # Claude + OpenCode
 ```
 
 Esto crea los symlinks y archivos de configuración necesarios (`.claude/skills/`, `CLAUDE.md`, etc.).
+
+> **OpenCode** es diferente al resto: no configura nada dentro de tu proyecto. En cambio instala
+> la skill `init-agents` y el comando `/init-agents` de forma **global** en `~/.config/opencode/`,
+> disponibles desde cualquier proyecto que abras en OpenCode.
 
 ---
 
@@ -184,13 +190,13 @@ Cada skill sabe cuándo invocar a las otras:
 
 ## Compatibilidad
 
-| Herramienta    | Soporte | Mecanismo                         |
-| -------------- | ------- | --------------------------------- |
-| Claude Code    | ✅      | `.claude/skills/` + `CLAUDE.md`   |
-| OpenCode       | ✅      | `.opencode/skills/` + `AGENTS.md` |
-| GitHub Copilot | ✅      | `.github/copilot-instructions.md` |
-| Gemini CLI     | ✅      | `.gemini/skills/` + `GEMINI.md`   |
-| Codex (OpenAI) | ✅      | `AGENTS.md` nativo                |
+| Herramienta    | Soporte | Mecanismo                                                        |
+| -------------- | ------- | ---------------------------------------------------------------- |
+| Claude Code    | ✅      | `.claude/skills/` + `CLAUDE.md`                                  |
+| OpenCode       | ✅      | `~/.config/opencode/skills/` + `~/.config/opencode/commands/`   |
+| GitHub Copilot | ✅      | `.github/copilot-instructions.md`                                |
+| Gemini CLI     | ✅      | `.gemini/skills/` + `GEMINI.md`                                  |
+| Codex (OpenAI) | ✅      | `AGENTS.md` nativo                                               |
 
 Las skills siguen el estándar [agentskills.io](https://agentskills.io) — compatibles con múltiples herramientas sin modificaciones.
 
