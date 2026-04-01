@@ -50,7 +50,7 @@ show_help() {
   echo "  --gemini     Configure Gemini CLI"
   echo "  --codex      Configure Codex (OpenAI)"
   echo "  --copilot    Configure GitHub Copilot"
-  echo "  --opencode   Configure OpenCode (global ~/.config/opencode/)"
+  echo "  --opencode   Configure OpenCode (local .opencode/)"
   echo "  --help       Show this help message"
   echo ""
   echo "If no options provided, runs in interactive mode."
@@ -175,13 +175,14 @@ setup_copilot() {
 }
 
 setup_opencode() {
-  local opencode_skills_dir="$HOME/.config/opencode/skills"
-  local opencode_commands_dir="$HOME/.config/opencode/commands"
+  local local_opencode_dir="$REPO_ROOT/.opencode"
+  local opencode_skills_dir="$local_opencode_dir/skills"
+  local opencode_commands_dir="$local_opencode_dir/commands"
 
   mkdir -p "$opencode_skills_dir"
   mkdir -p "$opencode_commands_dir"
 
-  # Copy init-agents skill to ~/.config/opencode/skills/
+  # Copy init-agents skill to .opencode/skills/ (local)
   local skill_src="$SKILLS_SOURCE/init-agents"
   local skill_dst="$opencode_skills_dir/init-agents"
 
@@ -189,15 +190,15 @@ setup_opencode() {
     rm -rf "$skill_dst"
   fi
   cp -r "$skill_src" "$skill_dst"
-  echo -e "${GREEN}  ✓ init-agents skill -> ~/.config/opencode/skills/init-agents/${NC}"
+  echo -e "${GREEN}  ✓ init-agents skill -> .opencode/skills/init-agents/${NC}"
 
-  # Create /init-agents slash command
+  # Create /init-agents slash command locally
   cat > "$opencode_commands_dir/init-agents.md" <<'EOF'
 ---
 description: Genera un AGENTS.md completo para el proyecto actual analizando su estructura, stack y skills disponibles
 ---
 
-Read the skill file at ~/.config/opencode/skills/init-agents/SKILL.md FIRST, then follow its instructions exactly.
+Read the skill file at .opencode/skills/init-agents/SKILL.md FIRST, then follow its instructions exactly.
 
 CONTEXT:
 - Working directory: !`echo -n "$(pwd)"`
@@ -206,8 +207,8 @@ CONTEXT:
 TASK:
 Analyze this repository and generate a complete AGENTS.md file following the skill protocol step by step.
 EOF
-  echo -e "${GREEN}  ✓ /init-agents command -> ~/.config/opencode/commands/init-agents.md${NC}"
-  echo -e "${CYAN}  → Restart OpenCode to load the new slash command${NC}"
+  echo -e "${GREEN}  ✓ /init-agents command -> .opencode/commands/init-agents.md${NC}"
+  echo -e "${CYAN}  → OpenCode will use local .opencode/ directory${NC}"
 }
 
 copy_agents_md() {
@@ -353,7 +354,7 @@ echo "Configured:"
 [ "$SETUP_CODEX" = true ] && echo "  • Codex (OpenAI): .codex/skills/ + AGENTS.md (native)"
 [ "$SETUP_GEMINI" = true ] && echo "  • Gemini CLI:     .gemini/skills/ + GEMINI.md"
 [ "$SETUP_COPILOT" = true ] && echo "  • GitHub Copilot: .github/copilot-instructions.md"
-[ "$SETUP_OPENCODE" = true ] && echo "  • OpenCode:       ~/.config/opencode/skills/ + ~/.config/opencode/commands/"
+[ "$SETUP_OPENCODE" = true ] && echo "  • OpenCode:       .opencode/skills/ + .opencode/commands/ (local)"
 echo ""
 echo -e "${BLUE}Note: Restart your AI assistant to load the skills.${NC}"
 echo -e "${BLUE}      AGENTS.md is the source of truth - edit it, then re-run this script.${NC}"
